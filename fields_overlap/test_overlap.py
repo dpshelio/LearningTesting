@@ -26,3 +26,10 @@ def test_edge_touching():
     base_field = (1, 1, 4, 4)
     over_field = (2, 2, 3, 4)
     assert overlap_area(base_field, over_field) == 2
+
+
+def test_2opposite_edge_touching():
+    ''' Test when there is an edge '''
+    base_field = (1, 1, 4, 4)
+    over_field = (2, 1, 3, 4)
+    assert overlap_area(base_field, over_field) == 3
