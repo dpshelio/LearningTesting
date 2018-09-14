@@ -19,3 +19,10 @@ def test_corner_overlap():
     base_field = (1, 0, 3, 5)
     over_field = (2, 4, 4, 6)
     assert overlap_area(base_field, over_field) == 1
+
+
+def test_edge_touching():
+    ''' Test when there is an edge '''
+    base_field = (1, 1, 4, 4)
+    over_field = (2, 2, 3, 4)
+    assert overlap_area(base_field, over_field) == 2
