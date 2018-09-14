@@ -12,3 +12,10 @@ def test_partial_overlap():
     base_field = (1, 1, 4, 3)
     over_field = (2, 2, 3, 4)
     assert overlap_area(base_field, over_field) == 1
+
+
+def test_corner_overlap():
+    ''' Test when there is a box in a corner'''
+    base_field = (1, 0, 3, 5)
+    over_field = (2, 4, 4, 6)
+    assert overlap_area(base_field, over_field) == 1
