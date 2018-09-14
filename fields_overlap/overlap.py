@@ -16,8 +16,8 @@ def show_fields(field1, field2):
     patch2 = patches.PathPatch(path2, facecolor='blue', lw=2)
     ax.add_patch(patch1)
     ax.add_patch(patch2)
-    ax.set_xlim(0,5)
-    ax.set_ylim(0,5)
+    ax.set_xlim(0, max(*field1, *field2) + 1)
+    ax.set_ylim(0, max(*field1, *field2) + 1)
     fig.show()
 
 
