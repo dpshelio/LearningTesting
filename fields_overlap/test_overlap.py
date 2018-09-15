@@ -47,3 +47,10 @@ def test_no_overlap():
     base_field = (0, 0, 3, 3)
     over_field = (4, 4, 5, 5)
     assert overlap_area(base_field, over_field) == 0
+
+
+def test_floats():
+    ''' Test that still works when using floats '''
+    base_field = (1, 1., 3.5, 3.5)
+    over_field = (3, 3, 5, 5)
+    assert overlap_area(base_field, over_field) == 0.5 * 0.5
