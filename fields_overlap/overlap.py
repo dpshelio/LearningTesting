@@ -24,6 +24,11 @@ def show_fields(field1, field2):
 def overlap_area(field1, field2):
     left1, bottom1, right1, top1 = field1
     left2, bottom2, right2, top2 = field2
+
+    if (left1 > right1 or bottom1 > top1 or
+        left2 > right2 or bottom2 > top2):
+        raise ValueError(" Coordinates need to be entered (left, bottom, right, top)")
+
     overlap_left = max(left1, left2)
     overlap_bottom = max(bottom1, bottom2)
     overlap_right = min(right1, right2)
