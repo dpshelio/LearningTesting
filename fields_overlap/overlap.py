@@ -38,6 +38,15 @@ def overlap_area(field1, field2):
     -------
     int or float
         Area in the coordinates entered unit.
+
+    Example
+    -------
+    >>> from overlap import overlap_area
+    >>> field_a = (1, 1, 4, 4) # position in kms as (x_0, y_0, x_1, y_1)
+    >>> field_b = (2, 2, 3, 3) # smaller field inside field_a
+    >>> overlap_area(field_a, field_b)
+    1
+
     '''
 
     left1, bottom1, right1, top1 = field1
