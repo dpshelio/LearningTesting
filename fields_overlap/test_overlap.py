@@ -1,4 +1,4 @@
-from pytest import approx
+from pytest import approx, raises
 
 from overlap import overlap_area
 
@@ -69,7 +69,8 @@ def test_negative_basic():
     ''' Tests that basic example works '''
     big_field = (-1, -1, -4, -4)
     inner_field = (-2, -2, -3, -3)
-    assert overlap_area(big_field, inner_field) == 1
+    with raises(ValueError, message=" Coordinates need to be entered (left, bottom, right, top) "):
+        overlap_area(big_field, inner_field)
 
 
 def test_negative_basic2():
