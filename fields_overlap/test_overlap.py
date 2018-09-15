@@ -1,6 +1,7 @@
+import pytest
 from pytest import approx, raises
 
-from overlap import overlap_area
+from overlap import overlap_area, figure_fields
 
 def test_basic():
     ''' Tests that basic example works '''
@@ -78,3 +79,11 @@ def test_negative_basic2():
     big_field = (-1, -1, 1, 1)
     inner_field = (0, -2, 1, 2)
     assert overlap_area(big_field, inner_field) == 2
+
+
+@pytest.mark.mpl_image_compare
+def test_plot():
+    big_field = (1, 1, 4, 4)
+    inner_field = (2, 2, 3, 3)
+    fig = figure_fields(big_field, inner_field)
+    return fig
