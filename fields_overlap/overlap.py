@@ -22,6 +22,24 @@ def show_fields(field1, field2):
 
 
 def overlap_area(field1, field2):
+    '''
+    Calculates the area of overlapping fields from the coordinates
+    of their corners.
+
+    parameters
+    ----------
+    field1: (tuple | list) of (int | float)
+        Coordinates of the first field. Order should be: (left, bottom, right, top)
+
+    field2: (tuple | list) of (int | float)
+        Coordinates of the second field. Order should be: (left, bottom, right, top)
+
+    Returns
+    -------
+    int or float
+        Area in the coordinates entered unit.
+    '''
+
     left1, bottom1, right1, top1 = field1
     left2, bottom2, right2, top2 = field2
 
