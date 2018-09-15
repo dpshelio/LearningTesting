@@ -70,3 +70,10 @@ def test_negative_basic():
     big_field = (-1, -1, -4, -4)
     inner_field = (-2, -2, -3, -3)
     assert overlap_area(big_field, inner_field) == 1
+
+
+def test_negative_basic2():
+    ''' Tests that basic example works '''
+    big_field = (-1, -1, 1, 1)
+    inner_field = (0, -2, 1, 2)
+    assert overlap_area(big_field, inner_field) == 2
