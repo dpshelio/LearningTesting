@@ -63,3 +63,10 @@ def test_floats_again():
     base_field = (1, 1., 3.3, 3.1)
     over_field = (3, 3, 5, 5)
     assert overlap_area(base_field, over_field) == approx(0.3 * 0.1, rel=1e-3)
+
+
+def test_negative_basic():
+    ''' Tests that basic example works '''
+    big_field = (-1, -1, -4, -4)
+    inner_field = (-2, -2, -3, -3)
+    assert overlap_area(big_field, inner_field) == 1
