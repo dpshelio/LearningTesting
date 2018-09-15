@@ -1,4 +1,6 @@
 from pytest import approx, raises
+from hypothesis import given
+from hypothesis.strategies import lists, integers, composite
 
 from overlap import overlap_area
 
@@ -78,3 +80,29 @@ def test_negative_basic2():
     big_field = (-1, -1, 1, 1)
     inner_field = (0, -2, 1, 2)
     assert overlap_area(big_field, inner_field) == 2
+
+
+# Create a new strategy to use in our tests
+@composite
+def coordinates(draw, elements=integers()):
+    xs = draw(lists(elements, min_size=4, max_size=4))
+    xs[0], xs[2] = sorted([xs[0], xs[2]])
+    xs[1], xs[3] = sorted([xs[1], xs[3]])
+    return xs
+
+
+@given(coordinates())
+def test_full_inside(big_field):
+    unit = 1
+    # In case the field generated is of height or width 1.
+    if big_field[2] - big_field[0] < 2 or big_field[3] - big_field[1] < 2:
+        unit = -1
+
+    other_field = [big_field[0] + unit, big_field[1] + unit,
+                   big_field[2] - unit, big_field[3] - unit]
+
+    # define which one is the inner field
+    inner_field = other_field if unit == 1 else big_field
+    area_inner = (inner_field[2] - inner_field[0]) * (inner_field[3] - inner_field[1])
+
+    assert overlap_area(big_field, inner_field) == area_inner
