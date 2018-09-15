@@ -1,3 +1,5 @@
+from pytest import approx
+
 from overlap import overlap_area
 
 def test_basic():
@@ -60,4 +62,4 @@ def test_floats_again():
     ''' Test that still works when using floats '''
     base_field = (1, 1., 3.3, 3.1)
     over_field = (3, 3, 5, 5)
-    assert overlap_area(base_field, over_field) == 0.3 * 0.1
+    assert overlap_area(base_field, over_field) == approx(0.3 * 0.1, rel=1e-3)
