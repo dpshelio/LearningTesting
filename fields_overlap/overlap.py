@@ -2,7 +2,11 @@ import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
 
-def show_fields(field1, field2):
+def show_fields(*args):
+    figure_fields(*args).show()
+
+
+def figure_fields(field1, field2):
     def vertices(left, bottom, right, top):
         verts = [(left, bottom), (left, top), (right, top), (right, bottom), (left, bottom)]
         return verts
@@ -18,7 +22,7 @@ def show_fields(field1, field2):
     ax.add_patch(patch2)
     ax.set_xlim(0, max(*field1, *field2) + 1)
     ax.set_ylim(0, max(*field1, *field2) + 1)
-    fig.show()
+    return fig
 
 
 def overlap_area(field1, field2):
