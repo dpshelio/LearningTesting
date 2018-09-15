@@ -40,3 +40,10 @@ def test_outside_edge_touching():
     base_field = (1, 1, 4, 4)
     over_field = (2, 4, 3, 5)
     assert overlap_area(base_field, over_field) == 0
+
+
+def test_no_overlap():
+    ''' Test when they are not touching each other '''
+    base_field = (0, 0, 3, 3)
+    over_field = (4, 4, 5, 5)
+    assert overlap_area(base_field, over_field) == 0
