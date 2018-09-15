@@ -28,6 +28,6 @@ def overlap_area(field1, field2):
     overlap_bottom = max(bottom1, bottom2)
     overlap_right = min(right1, right2)
     overlap_top = min(top1, top2)
-    overlap_height = (overlap_top - overlap_bottom)
-    overlap_width = (overlap_right - overlap_left)
+    overlap_height = max(0, overlap_top - overlap_bottom)
+    overlap_width = max(0, overlap_right - overlap_left)
     return overlap_height * overlap_width
