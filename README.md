@@ -5,6 +5,12 @@ Introductory tutorial about testing in python.
 A presentation is available in the gh-pages of the repository.
 The repository contains a new branch for each new step in the tutorial.
 
+## Build slides
+
+It uses emacs's orgmode with [org-reveal](https://raw.githubusercontent.com/yjwen/org-reveal). In order
+to evaluate all the src code blocks you can:
+`M-x eval-expression` and execute: `(setq org-confirm-babel-evaluate nil)`
+otherwise you will be asked once and again.
 
 ## Acknowledgements
 
