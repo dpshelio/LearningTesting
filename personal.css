@@ -1,0 +1,28 @@
+.blue-rectangle {
+    color:white;
+    font-size:15px;
+    padding: 10px 20px 10px 200px;
+    background-color: rgba(3,78,136,0.7);
+    width: 200px;
+    position: relative;
+    margin-left: 350px;
+}
+.blue-rectangle:before {
+    content: "";
+    position: absolute;
+    border: 10px solid transparent;
+    border-top-color: rgba(3,78,136,0.7);
+    border-right-color: rgba(3,78,136,0.7);
+    right: 100%;
+    top: 0;
+    width: 0;
+    height: 0
+}
+
+.reveal pre {
+
+    width: 120%;
+}
+.reveal section img {
+    background: rgba(255, 255, 255, 1);
+}

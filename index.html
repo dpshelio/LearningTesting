@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Testing, Testing, <br> One, Two, &#x2026;</title>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/moon.css" id="theme"/>
+
+<link rel="stylesheet" href="personal.css"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Testing, Testing, <br> One, Two, &#x2026;</h1>
+</section>
+<section>
+<section id="slide-org734e507">
+<h2 id="org734e507">Testing</h2>
+<div class="outline-text-2" id="text-org734e507">
+</div>
+</section>
+<section id="slide-org5cd2501">
+<h3 id="org5cd2501">Why?</h3>
+
+<div class="figure">
+<p><img src="https://media.giphy.com/media/vvLWidwZNYH5e/giphy-downsized-large.gif" alt="giphy-downsized-large.gif" />
+</p>
+</div>
+</section>
+<section id="slide-org178b9e1">
+<h3 id="org178b9e1">A few reasons</h3>
+<ul>
+<li><b>laziness</b></li>
+<li><b>peace of mind</b></li>
+<li><b>runnable specification</b></li>
+<li><b>reproducible debugging</b></li>
+<li><b>code structure / modularity</b></li>
+<li><b>easier to modify</b></li>
+
+</ul>
+</section>
+<section id="slide-orgedd8b96">
+<h3 id="orgedd8b96">However&#x2026;</h3>
+<p>
+<b>Not a panacea</b>
+</p>
+<blockquote nil>
+<p>
+Trying to improve the quality of software by doing more testing is like<br />
+trying to lose weight by weighting yourself more often.  <br />
+&#x2013; Steve McConnell
+</p>
+</blockquote>
+<aside class="notes">
+<p>
+Testing won't corrrect a buggy code.<br />
+Testing will tell you were the bugs are&#x2026;<br />
+&#x2026; if the test cases cover the bugs
+</p>
+
+</aside>
+
+</section>
+<section id="slide-org2978e61">
+<h3 id="org2978e61">How? - Unit test</h3>
+<p>
+<img src="https://media.giphy.com/media/WO74HAtUC9I40/giphy.gif" alt="giphy.gif" />
+<br />
+but there are more!
+</p>
+<aside class="notes">
+<p>
+Talk a bit about: component testing, integration testing, regression testing
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-orge35c83e">
+<h2 id="orge35c83e">Climate change</h2>
+<aside class="notes">
+<p>
+Let's look at a problem close to you. In this almost perfect scenario - still climate change exists -
+Let's think that we have images from the poles since a century ago.
+We want to study how they ice in the poles is changing.
+</p>
+
+</aside>
+</section>
+<section id="slide-org076580f">
+<h3 id="org076580f">problem</h3>
+
+<div class="figure">
+<p><img src="images/ice.jpg" alt="ice.jpg" />
+</p>
+</div>
+<aside class="notes">
+<p>
+How many of you are studying something to do with it?
+Ok, I don't want to leave you without the fun of doing it.
+As a physicist I like simplified problems.
+</p>
+
+</aside>
+</section>
+<section id="slide-org486d01b">
+<h3 id="org486d01b">another problem</h3>
+<aside class="notes">
+<p>
+In Saskatchewan - Canada - they have a similar problem, but with
+agriculture fields. And there they are rectangular!!
+ Our main problem is to find fields that are overlapping.
+</p>
+
+</aside>
+
+<div class="figure">
+<p><img src="images/fields.jpg" alt="fields.jpg" />
+</p>
+</div>
+</section>
+<section id="slide-org410e428">
+<h3 id="org410e428">What we got</h3>
+<aside class="notes">
+<p>
+Our supervisor hands us some code that someone did a while ago
+as a side project that they never got to complete. But we have
+to write a paper quickly about it!!
+Even when these fields were not our main thesis topic. It's all right,
+helps us to get exposure to other areas.
+</p>
+
+</aside>
+</section>
+<section id="slide-orgb2309f0">
+<h4 id="orgb2309f0">A file</h4>
+<p>
+<a href="https://raw.githubusercontent.com/dpshelio/LearningTesting/start/fields_overlap/overlap.py">Download link</a>
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">oa</span><span style="color: #AE81FF;">(</span>f1, f2<span style="color: #AE81FF;">)</span>:
+  <span style="color: #FD971F;">L1</span>, <span style="color: #FD971F;">B1</span>, <span style="color: #FD971F;">T1</span>, <span style="color: #FD971F;">R1</span> = f1
+  <span style="color: #FD971F;">L2</span>, <span style="color: #FD971F;">B2</span>, <span style="color: #FD971F;">T2</span>, <span style="color: #FD971F;">R2</span> = f2
+  <span style="color: #FD971F;">overL</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span>L1, L2<span style="color: #AE81FF;">)</span>
+  <span style="color: #FD971F;">overB</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span>B1, B2<span style="color: #AE81FF;">)</span>
+  <span style="color: #FD971F;">overR</span> = <span style="color: #F92672;">min</span><span style="color: #AE81FF;">(</span>R1, R2<span style="color: #AE81FF;">)</span>
+  <span style="color: #FD971F;">overT</span> = <span style="color: #F92672;">min</span><span style="color: #AE81FF;">(</span>T1, T2<span style="color: #AE81FF;">)</span>
+  <span style="color: #FD971F;">overH</span> = <span style="color: #AE81FF;">(</span>overT-overB<span style="color: #AE81FF;">)</span>
+  <span style="color: #FD971F;">overW</span> = <span style="color: #AE81FF;">(</span>overR-overL<span style="color: #AE81FF;">)</span>
+  <span style="color: #F92672;">return</span> overH*overW
+</pre>
+</div>
+
+<p>
+Someone gives us this code
+and we are told it's run as:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python">oa<span style="color: #AE81FF;">(</span><span style="color: #66D9EF;">(</span><span style="color: #AE81FF;">1</span>.,<span style="color: #AE81FF;">1</span>.,<span style="color: #AE81FF;">4</span>.,<span style="color: #AE81FF;">4</span>.<span style="color: #66D9EF;">)</span>,<span style="color: #66D9EF;">(</span><span style="color: #AE81FF;">2</span>.,<span style="color: #AE81FF;">2</span>.,<span style="color: #AE81FF;">3</span>.,<span style="color: #AE81FF;">3</span>.<span style="color: #66D9EF;">)</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+1.0
+
+</pre>
+
+</section>
+<section id="slide-org8f99a6f">
+<h4 id="org8f99a6f">On the same file&#x2026;</h4>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">import</span> matplotlib.pyplot <span style="color: #F92672;">as</span> plt
+<span style="color: #F92672;">from</span> matplotlib.path <span style="color: #F92672;">import</span> Path
+<span style="color: #F92672;">import</span> matplotlib.patches <span style="color: #F92672;">as</span> patches
+
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">sf</span><span style="color: #AE81FF;">(</span>f1, f2<span style="color: #AE81FF;">)</span>:
+    <span style="color: #F92672;">def</span> <span style="color: #A6E22E;">vertices</span><span style="color: #AE81FF;">(</span>L,B,R,T<span style="color: #AE81FF;">)</span>:
+        <span style="color: #FD971F;">verts</span> = <span style="color: #AE81FF;">[</span><span style="color: #66D9EF;">(</span>L,B<span style="color: #66D9EF;">)</span>,<span style="color: #66D9EF;">(</span>L,T<span style="color: #66D9EF;">)</span>,<span style="color: #66D9EF;">(</span>R,T<span style="color: #66D9EF;">)</span>,<span style="color: #66D9EF;">(</span>R,B<span style="color: #66D9EF;">)</span>,<span style="color: #66D9EF;">(</span>L,B<span style="color: #66D9EF;">)</span><span style="color: #AE81FF;">]</span>
+        <span style="color: #F92672;">return</span> verts
+    <span style="color: #FD971F;">codes</span> = <span style="color: #AE81FF;">[</span>Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY<span style="color: #AE81FF;">]</span>
+    <span style="color: #FD971F;">p1</span> = Path<span style="color: #AE81FF;">(</span>vertices<span style="color: #66D9EF;">(</span>*f1<span style="color: #66D9EF;">)</span>, codes<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">p2</span> = Path<span style="color: #AE81FF;">(</span>vertices<span style="color: #66D9EF;">(</span>*f2<span style="color: #66D9EF;">)</span>, codes<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">fig</span> = plt.figure<span style="color: #AE81FF;">()</span>
+    <span style="color: #FD971F;">ax</span> = fig.add_subplot<span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">111</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">pa1</span> = patches.PathPatch<span style="color: #AE81FF;">(</span>p1, facecolor=<span style="color: #E6DB74;">'orange'</span>, lw=<span style="color: #AE81FF;">2</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">pa2</span> = patches.PathPatch<span style="color: #AE81FF;">(</span>p2, facecolor=<span style="color: #E6DB74;">'blue'</span>, lw=<span style="color: #AE81FF;">2</span><span style="color: #AE81FF;">)</span>
+    ax.add_patch<span style="color: #AE81FF;">(</span>pa1<span style="color: #AE81FF;">)</span>
+    ax.add_patch<span style="color: #AE81FF;">(</span>pa2<span style="color: #AE81FF;">)</span>
+    ax.set_xlim<span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>,<span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    ax.set_ylim<span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>,<span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    fig.show<span style="color: #AE81FF;">()</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org26ed5b9">
+<h4 id="org26ed5b9">not all is lost</h4>
+
+<div class="figure">
+<p><img src="https://media.giphy.com/media/Nweu3IeBIZIvm/giphy.gif" alt="giphy.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-orge648841">
+<h4 id="orge648841">running it&#x2026;</h4>
+<p>
+And if we call that function as we did before
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python">sf<span style="color: #AE81FF;">(</span><span style="color: #66D9EF;">(</span><span style="color: #AE81FF;">1</span>.,<span style="color: #AE81FF;">1</span>.,<span style="color: #AE81FF;">4</span>.,<span style="color: #AE81FF;">4</span>.<span style="color: #66D9EF;">)</span>,<span style="color: #66D9EF;">(</span><span style="color: #AE81FF;">2</span>.,<span style="color: #AE81FF;">2</span>.,<span style="color: #AE81FF;">3</span>.,<span style="color: #AE81FF;">3</span>.<span style="color: #66D9EF;">)</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="images/basic.png" alt="basic.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-org6cdef07">
+<h4 id="org6cdef07">Let's try to understand</h4>
+
+<div class="figure">
+<p><img src="images/explained.png" alt="explained.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge06ce7d">
+<h2 id="orge06ce7d">Step 1: Version Control and regression test</h2>
+<a href="https://github.com/dpshelio/LearningTesting/tree/start/fields_overlap"><div class="blue-rectangle">start</div></a>
+</section>
+<section id="slide-orga39a7d4">
+<h3 id="orga39a7d4">Version control</h3>
+<aside class="notes">
+<p>
+   We are going to skip this step. Yo is covering this later today.
+Here are the commands for you to review it in the future.
+</p>
+
+</aside>
+<div class="org-src-container">
+
+<pre  class="src src-bash">git init
+git add overlap.py
+git commit -m <span style="color: #E6DB74;">"Stuff as I got it from &lt;insert supervisor here&gt;"</span>
+</pre>
+</div>
+</section>
+<section id="slide-org075a998">
+<h3 id="org075a998">Regression test</h3>
+<p>
+Create a new file called <code>test_overlap.py</code>
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">from</span> overlap <span style="color: #F92672;">import</span> oa
+
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_basic</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests that basic example works '''</span>
+    <span style="color: #FD971F;">big_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">inner_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> oa<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">1</span>
+</pre>
+</div>
+
+<p>
+Then we run the test as:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">pytest
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org43f474d">
+<h2 id="org43f474d">Step 2: Clean up</h2>
+<a href="https://github.com/dpshelio/LearningTesting/tree/cleanup/fields_overlap"><div class="blue-rectangle">cleanup</div></a>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">overlap_area</span><span style="color: #AE81FF;">(</span>field1, field2<span style="color: #AE81FF;">)</span>:
+    <span style="color: #FD971F;">left1</span>, <span style="color: #FD971F;">bottom1</span>, <span style="color: #FD971F;">top1</span>, <span style="color: #FD971F;">right1</span> = field1
+    <span style="color: #FD971F;">left2</span>, <span style="color: #FD971F;">bottom2</span>, <span style="color: #FD971F;">top2</span>, <span style="color: #FD971F;">right2</span> = field2
+    <span style="color: #FD971F;">overlap_left</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span>left1, left2<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">overlap_bottom</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span>bottom1, bottom2<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">overlap_right</span> = <span style="color: #F92672;">min</span><span style="color: #AE81FF;">(</span>right1, right2<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">overlap_top</span> = <span style="color: #F92672;">min</span><span style="color: #AE81FF;">(</span>top1, top2<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">overlap_height</span> = <span style="color: #AE81FF;">(</span>overlap_top - overlap_bottom<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">overlap_width</span> = <span style="color: #AE81FF;">(</span>overlap_right - overlap_left<span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">return</span> overlap_height * overlap_width
+</pre>
+</div>
+</section>
+<section id="slide-orgd805db2">
+<h3 id="orgd805db2">and for consistency</h3>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">show_fields</span><span style="color: #AE81FF;">(</span>field1, field2<span style="color: #AE81FF;">)</span>:
+    <span style="color: #F92672;">def</span> <span style="color: #A6E22E;">vertices</span><span style="color: #AE81FF;">(</span>left, bottom, right, top<span style="color: #AE81FF;">)</span>:
+        <span style="color: #FD971F;">verts</span> = <span style="color: #AE81FF;">[</span><span style="color: #66D9EF;">(</span>left, bottom<span style="color: #66D9EF;">)</span>, <span style="color: #66D9EF;">(</span>left, top<span style="color: #66D9EF;">)</span>, <span style="color: #66D9EF;">(</span>right, top<span style="color: #66D9EF;">)</span>, <span style="color: #66D9EF;">(</span>right, bottom<span style="color: #66D9EF;">)</span>, <span style="color: #66D9EF;">(</span>left, bottom<span style="color: #66D9EF;">)</span><span style="color: #AE81FF;">]</span>
+        <span style="color: #F92672;">return</span> verts
+
+    <span style="color: #FD971F;">codes</span> = <span style="color: #AE81FF;">[</span>Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY<span style="color: #AE81FF;">]</span>
+    <span style="color: #FD971F;">path1</span> = Path<span style="color: #AE81FF;">(</span>vertices<span style="color: #66D9EF;">(</span>*field1<span style="color: #66D9EF;">)</span>, codes<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">path2</span> = Path<span style="color: #AE81FF;">(</span>vertices<span style="color: #66D9EF;">(</span>*field2<span style="color: #66D9EF;">)</span>, codes<span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">fig</span> = plt.figure<span style="color: #AE81FF;">()</span>
+    <span style="color: #FD971F;">ax</span> = fig.add_subplot<span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">111</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">patch1</span> = patches.PathPatch<span style="color: #AE81FF;">(</span>path1, facecolor=<span style="color: #E6DB74;">'orange'</span>, lw=<span style="color: #AE81FF;">2</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">patch2</span> = patches.PathPatch<span style="color: #AE81FF;">(</span>path2, facecolor=<span style="color: #E6DB74;">'blue'</span>, lw=<span style="color: #AE81FF;">2</span><span style="color: #AE81FF;">)</span>
+    ax.add_patch<span style="color: #AE81FF;">(</span>patch1<span style="color: #AE81FF;">)</span>
+    ax.add_patch<span style="color: #AE81FF;">(</span>patch2<span style="color: #AE81FF;">)</span>
+    ax.set_xlim<span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>,<span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    ax.set_ylim<span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>,<span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    fig.show<span style="color: #AE81FF;">()</span>
+</pre>
+</div>
+</section>
+<section id="slide-org6bdbaa7">
+<h3 id="org6bdbaa7">Rerun test</h3>
+<div class="org-src-container">
+
+<pre  class="src src-bash">$ pytest
+...
+E   ImportError: cannot import name <span style="color: #E6DB74;">'oa'</span>
+...
+</pre>
+</div>
+<aside class="notes">
+<p>
+&#x2026; we forgot to update the tests!!
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-org7fb27f0">
+<h2 id="org7fb27f0">Step 3: Design tests</h2>
+<div class="outline-text-2" id="text-org7fb27f0">
+</div>
+</section>
+<section id="slide-org41a1ada">
+<h3 id="org41a1ada">all inside</h3>
+
+<div class="figure">
+<p><img src="images/all_inside.png" alt="all_inside.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-org0ee7bcd">
+<h3 id="org0ee7bcd">partial overlap</h3>
+
+<div class="figure">
+<p><img src="images/partial_overlap.png" alt="partial_overlap.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-org2349fd3">
+<h3 id="org2349fd3">Think about other cases</h3>
+</section>
+<section id="slide-orgbbaeef5">
+<h3 id="orgbbaeef5">overlap corner</h3>
+
+<div class="figure">
+<p><img src="images/corner_overlap.png" alt="corner_overlap.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgb2eb78d">
+<h3 id="orgb2eb78d">just touching</h3>
+
+<div class="figure">
+<p><img src="images/edge_touching.png" alt="edge_touching.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgd30eb7b">
+<h3 id="orgd30eb7b">just touching on the outside</h3>
+
+<div class="figure">
+<p><img src="images/edge_touching_outside.png" alt="edge_touching_outside.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-org5477daa">
+<h3 id="org5477daa">no overlap</h3>
+
+<div class="figure">
+<p><img src="images/no_overlap.png" alt="no_overlap.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org0b02d2f">
+<h2 id="org0b02d2f">Step 4: Write the tests</h2>
+<a href="https://github.com/dpshelio/LearningTesting/tree/tests/fields_overlap"><div class="blue-rectangle">tests</div></a>
+</section>
+<section id="slide-org3157860">
+<h3 id="org3157860">all inside</h3>
+<p>
+Done already on <code>test_basic</code>
+</p>
+</section>
+<section id="slide-org1a257f4">
+<h3 id="org1a257f4">partial overlap</h3>
+
+<div class="figure">
+<p><img src="images/partial_overlap_number.png" alt="partial_overlap_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_partial_overlap</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests when there's a partial overlap'''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">1</span>
+</pre>
+</div>
+</section>
+<section id="slide-org3a1c5c6">
+<h3 id="org3a1c5c6">overlap corner</h3>
+
+<div class="figure">
+<p><img src="images/corner_overlap_number.png" alt="corner_overlap_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_corner_overlap</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests when there's a partial overlap'''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">0</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">6</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">1</span>
+</pre>
+</div>
+</section>
+<section id="slide-orge315306">
+<h4 id="orge315306">Run the tests</h4>
+<div class="org-src-container">
+
+<pre  class="src src-bash">$ pytest
+...
+E       assert -3 == <span style="color: #AE81FF;">1</span>
+...
+</pre>
+</div>
+</section>
+<section id="slide-org6fb2208">
+<h4 id="org6fb2208">Find problem!</h4>
+<p>
+Look at <code>overlap.py</code>. Is there something different between what we are using to plot and to calculate the area?
+</p>
+</section>
+<section id="slide-orgc9f214f">
+<h3 id="orgc9f214f">just touching</h3>
+
+<div class="figure">
+<p><img src="images/edge_touching_number.png" alt="edge_touching_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_edge_touching</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Test when there is an edge '''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">2</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-orgabfc7ca">
+<h3 id="orgabfc7ca">touching opposite sides</h3>
+
+<div class="figure">
+<p><img src="images/2opposite_edge_touching_number.png" alt="2opposite_edge_touching_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_edge_touching</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Test when there is an edge '''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">3</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org1fb0a3e">
+<h3 id="org1fb0a3e">touching on the outside</h3>
+
+<div class="figure">
+<p><img src="images/outside_edge_touching_number.png" alt="outside_edge_touching_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_outside_edge_touching</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Test when they are touching on the outside '''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">0</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org375c391">
+<h3 id="org375c391">no overlap</h3>
+
+<div class="figure">
+<p><img src="images/no_overlap_number.png" alt="no_overlap_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_no_overlap</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Test when they are not touching each other '''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>, <span style="color: #AE81FF;">0</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">5</span>, <span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">0</span>
+</pre>
+</div>
+</section>
+<section id="slide-org5155ff0">
+<h4 id="org5155ff0">Run the tests</h4>
+<div class="org-src-container">
+
+<pre  class="src src-bash">$ pytest
+...
+E       assert <span style="color: #AE81FF;">1</span> == <span style="color: #AE81FF;">0</span>
+...
+</pre>
+</div>
+</section>
+<section id="slide-orga7f2262">
+<h4 id="orga7f2262">Find problem!</h4>
+<p>
+Look at <code>overlap_area()</code>.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #FD971F;">overlap_left</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span>left1, left2<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">max(0, 4) =&gt; 4</span>
+<span style="color: #FD971F;">overlap_bottom</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span>bottom1, bottom2<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">max(0, 4) =&gt; 4</span>
+<span style="color: #FD971F;">overlap_right</span> = <span style="color: #F92672;">min</span><span style="color: #AE81FF;">(</span>right1, right2<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">min(3, 5) =&gt; 3</span>
+<span style="color: #FD971F;">overlap_top</span> = <span style="color: #F92672;">min</span><span style="color: #AE81FF;">(</span>top1, top2<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">min(3, 5) =&gt; 3</span>
+<span style="color: #FD971F;">overlap_height</span> = <span style="color: #AE81FF;">(</span>overlap_top - overlap_bottom<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">3 - 4 =&gt; -1</span>
+<span style="color: #FD971F;">overlap_width</span> = <span style="color: #AE81FF;">(</span>overlap_right - overlap_left<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">3 - 4 =&gt; -1</span>
+<span style="color: #F92672;">return</span> overlap_height * overlap_width <span style="color: #75715E;"># </span><span style="color: #75715E;">-1 * -1 =&gt; 1</span>
+</pre>
+</div>
+</section>
+<section id="slide-orgee4f6d7">
+<h4 id="orgee4f6d7">Fixing the problem</h4>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #FD971F;">overlap_height</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>, overlap_top - overlap_bottom<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">max(0, 3 - 4) =&gt; max(0, -1) =&gt; 0</span>
+<span style="color: #FD971F;">overlap_width</span> = <span style="color: #F92672;">max</span><span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>, overlap_right - overlap_left<span style="color: #AE81FF;">)</span> <span style="color: #75715E;"># </span><span style="color: #75715E;">max(0, 3 - 4) =&gt; max(0, -1) =&gt; 0</span>
+</pre>
+</div>
+
+<p>
+<b>Re-run</b> the tests
+</p>
+</section>
+<section id="slide-orga16d091">
+<h3 id="orga16d091">Using decimals - does still work?</h3>
+
+<div class="figure">
+<p><img src="images/floats_number.png" alt="floats_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_floats</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Test that still works when using floats '''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>., <span style="color: #AE81FF;">3</span>.<span style="color: #AE81FF;">5</span>, <span style="color: #AE81FF;">3</span>.<span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">5</span>, <span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">5</span> * <span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">5</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org6fceaa0">
+<h3 id="org6fceaa0">Using decimals - does really work?</h3>
+
+<div class="figure">
+<p><img src="images/floats_again_number.png" alt="floats_again_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_floats</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Test that still works when using floats '''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>., <span style="color: #AE81FF;">3</span>.<span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span>.<span style="color: #AE81FF;">1</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">5</span>, <span style="color: #AE81FF;">5</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>base_field, over_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">3</span> * <span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">1</span>
+</pre>
+</div>
+</section>
+<section id="slide-orgaaed7bc">
+<h4 id="orgaaed7bc">Run the tests</h4>
+<div class="org-src-container">
+
+<pre  class="src src-bash">$ pytest
+...
+E       assert <span style="color: #AE81FF;">0.03000000000000001</span> == <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0.3</span> * <span style="color: #AE81FF;">0.1</span><span style="color: #AE81FF;">)</span>
+...
+</pre>
+</div>
+</section>
+<section id="slide-org9f1d261">
+<h4 id="org9f1d261">What's happening?</h4>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">for</span> i <span style="color: #F92672;">in</span> <span style="color: #F92672;">range</span><span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">10</span><span style="color: #AE81FF;">)</span>:
+    <span style="color: #F92672;">print</span><span style="color: #AE81FF;">(</span>i * <span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">1</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+0.0
+0.1
+0.2
+0.30000000000000004
+0.4
+0.5
+0.6000000000000001
+0.7000000000000001
+0.8
+0.9
+</pre>
+
+
+<p>
+<b>Read more:</b> <a href="https://docs.python.org/3/tutorial/floatingpoint.html">Python's documentation</a>, <a href="https://floating-point-gui.de/basic/">The floating-point guide</a>
+</p>
+</section>
+<section id="slide-org064dbb4">
+<h4 id="org064dbb4">Solve the problem</h4>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">1</span> + <span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">2</span> == approx<span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>.<span style="color: #AE81FF;">3</span>, rel=<span style="color: #AE81FF;">1e</span>-<span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+
+</section>
+<section id="slide-org50ec73c">
+<h3 id="org50ec73c">What about negative coordinates?</h3>
+
+<div class="figure">
+<p><img src="images/basic_negative_number.png" alt="basic_negative_number.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_negative_basic</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests that basic example works '''</span>
+    <span style="color: #FD971F;">big_field</span> = <span style="color: #AE81FF;">(</span>-<span style="color: #AE81FF;">1</span>, -<span style="color: #AE81FF;">1</span>, -<span style="color: #AE81FF;">4</span>, -<span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">inner_field</span> = <span style="color: #AE81FF;">(</span>-<span style="color: #AE81FF;">2</span>, -<span style="color: #AE81FF;">2</span>, -<span style="color: #AE81FF;">3</span>, -<span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">1</span>
+</pre>
+</div>
+</section>
+<section id="slide-org520a3ac">
+<h4 id="org520a3ac">Run the tests</h4>
+<div class="org-src-container">
+
+<pre  class="src src-bash">$ pytest
+...
+E       assert <span style="color: #AE81FF;">0</span> == <span style="color: #AE81FF;">1</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-orgb562bfc">
+<h4 id="orgb562bfc">Solve the problem</h4>
+<ul>
+<li>Give up and mention it on the documentation: <i>"Only valid for positive coordinates"</i></li>
+
+</ul>
+</section>
+<section >
+<ul class="org-ul">
+<li><a id="org555da24"></a>But I'm not convinced&#x2026;<br />
+<p>
+Let's write another test:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_negative_basic2</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests that basic example works '''</span>
+    <span style="color: #FD971F;">big_field</span> = <span style="color: #AE81FF;">(</span>-<span style="color: #AE81FF;">1</span>, -<span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">inner_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">0</span>, -<span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">2</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">2</span>
+</pre>
+</div>
+
+
+</section>
+<section >
+</li>
+<li><a id="org06b5e8e"></a>Re-read the test<br />
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #FD971F;">big_field</span> = <span style="color: #AE81FF;">(</span>-<span style="color: #AE81FF;">1</span>, -<span style="color: #AE81FF;">1</span>, -<span style="color: #AE81FF;">4</span>, -<span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+<aside class="notes">
+<p>
+Aha! It's not <code>(left, bottom, right, top)</code>, but <code>(right, top, left, bottom)</code>
+</p>
+
+</aside>
+</section>
+<section >
+</li>
+<li><a id="orgc4e9555"></a>What do we do?<br />
+<p>
+Two options:
+</p>
+<ul>
+<li>Mention it in the documentation, and produce a meaningful error.</li>
+<li>Implement a fix and allow any order.</li>
+
+</ul>
+</li>
+</ul>
+
+</section>
+<section id="slide-orgb08b4fa">
+<h3 id="orgb08b4fa">Negative tests</h3>
+<p>
+Let's throw an error if the user inputs the coordinates in the wrong order.
+In <code>overlap_area()</code>:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">if</span> <span style="color: #AE81FF;">(</span>left1 &gt; right1 <span style="color: #F92672;">or</span> bottom1 &gt; top1 <span style="color: #F92672;">or</span>
+    left2 &gt; right2 <span style="color: #F92672;">or</span> bottom2 &gt; top2<span style="color: #AE81FF;">)</span>:
+    <span style="color: #F92672;">raise</span> <span style="color: #66D9EF;">ValueError</span><span style="color: #AE81FF;">(</span><span style="color: #E6DB74;">" Coordinates need to be entered (left, bottom, right, top)"</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org7f515a8">
+<h4 id="org7f515a8">Documentation</h4>
+<p>
+Also is a good opportunity now to add some documentation to the function:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #E6DB74;">'''</span>
+<span style="color: #E6DB74;">Calculates the area of overlapping fields from the coordinates</span>
+<span style="color: #E6DB74;">of their corners.</span>
+
+<span style="color: #E6DB74;">parameters</span>
+<span style="color: #E6DB74;">----------</span>
+<span style="color: #E6DB74;">field1: (tuple | list) of (int | float)</span>
+<span style="color: #E6DB74;">    Coordinates of the first field. Order should be: (left, bottom, right, top)</span>
+
+<span style="color: #E6DB74;">field2: (tuple | list) of (int | float)</span>
+<span style="color: #E6DB74;">    Coordinates of the second field. Order should be: (left, bottom, right, top)</span>
+
+<span style="color: #E6DB74;">Returns</span>
+<span style="color: #E6DB74;">-------</span>
+<span style="color: #E6DB74;">area: int or float</span>
+<span style="color: #E6DB74;">    Area in the coordinates entered unit.</span>
+<span style="color: #E6DB74;">'''</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org84e446c">
+<h4 id="org84e446c">Fix the test!!</h4>
+<p>
+on <code>test_overlap.py</code>:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">from</span> pytest <span style="color: #F92672;">import</span> approx, raises
+</pre>
+</div>
+<p>
+and update <code>test_negative_basic()</code>
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_negative_basic</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests that basic example works '''</span>
+    <span style="color: #FD971F;">big_field</span> = <span style="color: #AE81FF;">(</span>-<span style="color: #AE81FF;">1</span>, -<span style="color: #AE81FF;">1</span>, -<span style="color: #AE81FF;">4</span>, -<span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">inner_field</span> = <span style="color: #AE81FF;">(</span>-<span style="color: #AE81FF;">2</span>, -<span style="color: #AE81FF;">2</span>, -<span style="color: #AE81FF;">3</span>, -<span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">with</span> raises<span style="color: #AE81FF;">(</span><span style="color: #66D9EF;">ValueError</span>,
+                message=<span style="color: #E6DB74;">" Coordinates need to be entered (left, bottom, right, top) "</span><span style="color: #AE81FF;">)</span>:
+        overlap_area<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge23d253">
+<h2 id="orge23d253">Step 5: Coverage</h2>
+<a href="https://github.com/dpshelio/LearningTesting/tree/coverage/fields_overlap"><div class="blue-rectangle">coverage</div></a>
+
+<p>
+How much of our code is being tested?
+If you've not installed <a href="https://pytest-cov.readthedocs.io/en/latest/index.html"><code>pytest-cov</code></a> do it now:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">pip install pytest-cov
+</pre>
+</div>
+<p>
+and then we can run it as:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">pytest --cov=overlap
+</pre>
+</div>
+
+</section>
+<section id="slide-orgba91c2b">
+<h3 id="orgba91c2b">want more detailed information?</h3>
+<div class="org-src-container">
+
+<pre  class="src src-bash">pytest --cov=overlap --cov-report html
+python -m http.server <span style="color: #75715E;"># </span><span style="color: #75715E;">C-c to kill it</span>
+</pre>
+</div>
+<p>
+You can add it into a <code>pytest.ini</code> so it always check.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-conf">[<span style="color: #66D9EF;">pytest</span>]
+<span style="color: #FD971F;">addopts</span> = --cov=overlap --cov-report html
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org7d35b52">
+<h2 id="org7d35b52">Step 6: Keep your documentation up to date</h2>
+<a href="https://github.com/dpshelio/LearningTesting/tree/doctest/fields_overlap"><div class="blue-rectangle">doctest</div></a>
+</section>
+<section id="slide-org09bfcee">
+<h3 id="org09bfcee">Write an example</h3>
+<p>
+Let's add an example on our documentation to see the power of <a href="https://docs.python.org/3.6/library/doctest.html"><code>doctest</code></a>
+</p>
+<pre class="example">
+Example
+-------
+&gt;&gt;&gt; from overlap import overlap_area
+&gt;&gt;&gt; field_a = (1, 1, 4, 4) # position in kms as (x_0, y_0, x_1, y_1)
+&gt;&gt;&gt; field_b = (2, 2, 3, 3) # smaller field inside field_a
+&gt;&gt;&gt; overlap_area(field_a, field_b)
+1
+</pre>
+
+</section>
+<section id="slide-orgcebb742">
+<h3 id="orgcebb742">Run the test</h3>
+<div class="org-src-container">
+
+<pre  class="src src-bash">python -m doctest overlap.py
+</pre>
+</div>
+<p>
+Change the example to see what happens when it fails.
+</p>
+
+</section>
+<section id="slide-org5b21531">
+<h3 id="org5b21531">Add it to the pytest</h3>
+<p>
+Add <code>addopts = --doctest-modules</code> to the <code>pytest.ini</code>
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-conf">[<span style="color: #66D9EF;">pytest</span>]
+<span style="color: #FD971F;">addopts</span> = --cov=overlap --cov-report html --doctest-modules
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgec12db4">
+<h2 id="orgec12db4">Step 7: Other type of tests</h2>
+<div class="outline-text-2" id="text-orgec12db4">
+</div>
+</section>
+<section id="slide-org8cc9dff">
+<h3 id="org8cc9dff">Property based tests</h3>
+<a href="https://github.com/dpshelio/LearningTesting/tree/hypothesis/fields_overlap"><div class="blue-rectangle">hypothesis</div></a>
+
+<p>
+<a href="https://hypothesis.readthedocs.io/">Hypothesis</a> generates tests automatically based on a property.
+</p>
+
+
+<div class="figure">
+<p><img src="https://media.giphy.com/media/2FazgZPXV9hCyeSek/giphy.gif" alt="giphy.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-orga37311c">
+<h4 id="orga37311c">inside field is always the same area</h4>
+<p>
+Load hypothesis:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">from</span> hypothesis <span style="color: #F92672;">import</span> given
+<span style="color: #F92672;">from</span> hypothesis.strategies <span style="color: #F92672;">import</span> lists, integers, composite
+</pre>
+</div>
+
+<p>
+add a new strategy to generate coordinates:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #66D9EF;">@composite</span>
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">coordinates</span><span style="color: #AE81FF;">(</span>draw, elements=integers<span style="color: #66D9EF;">()</span><span style="color: #AE81FF;">)</span>:
+    <span style="color: #FD971F;">xs</span> = draw<span style="color: #AE81FF;">(</span>lists<span style="color: #66D9EF;">(</span>elements, min_size=<span style="color: #AE81FF;">4</span>, max_size=<span style="color: #AE81FF;">4</span><span style="color: #66D9EF;">)</span><span style="color: #AE81FF;">)</span>
+    xs<span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">0</span><span style="color: #AE81FF;">]</span>, <span style="color: #FD971F;">xs</span><span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">2</span><span style="color: #AE81FF;">]</span> = <span style="color: #F92672;">sorted</span><span style="color: #AE81FF;">(</span><span style="color: #66D9EF;">[</span>xs<span style="color: #A6E22E;">[</span><span style="color: #AE81FF;">0</span><span style="color: #A6E22E;">]</span>, xs<span style="color: #A6E22E;">[</span><span style="color: #AE81FF;">2</span><span style="color: #A6E22E;">]</span><span style="color: #66D9EF;">]</span><span style="color: #AE81FF;">)</span>
+    xs<span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">1</span><span style="color: #AE81FF;">]</span>, <span style="color: #FD971F;">xs</span><span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">]</span> = <span style="color: #F92672;">sorted</span><span style="color: #AE81FF;">(</span><span style="color: #66D9EF;">[</span>xs<span style="color: #A6E22E;">[</span><span style="color: #AE81FF;">1</span><span style="color: #A6E22E;">]</span>, xs<span style="color: #A6E22E;">[</span><span style="color: #AE81FF;">3</span><span style="color: #A6E22E;">]</span><span style="color: #66D9EF;">]</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">return</span> xs
+</pre>
+</div>
+
+<p>
+and add the test:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #66D9EF;">@given</span><span style="color: #AE81FF;">(</span>coordinates<span style="color: #66D9EF;">()</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_full_inside</span><span style="color: #AE81FF;">(</span>big_field<span style="color: #AE81FF;">)</span>:
+    <span style="color: #FD971F;">unit</span> = <span style="color: #AE81FF;">1</span>
+    <span style="color: #75715E;"># </span><span style="color: #75715E;">In case the field generated is of height or width 1.</span>
+    <span style="color: #F92672;">if</span> big_field<span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">2</span><span style="color: #AE81FF;">]</span> - big_field<span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">0</span><span style="color: #AE81FF;">]</span> &lt; <span style="color: #AE81FF;">2</span> <span style="color: #F92672;">or</span> big_field<span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">]</span> - big_field<span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">1</span><span style="color: #AE81FF;">]</span> &lt; <span style="color: #AE81FF;">2</span>:
+        <span style="color: #FD971F;">unit</span> = -<span style="color: #AE81FF;">1</span>
+
+    <span style="color: #FD971F;">other_field</span> = <span style="color: #AE81FF;">[</span>big_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">0</span><span style="color: #66D9EF;">]</span> + unit, big_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">1</span><span style="color: #66D9EF;">]</span> + unit,
+                   big_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">2</span><span style="color: #66D9EF;">]</span> - unit, big_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">3</span><span style="color: #66D9EF;">]</span> - unit<span style="color: #AE81FF;">]</span>
+    <span style="color: #75715E;"># </span><span style="color: #75715E;">define which one is the inner field</span>
+    <span style="color: #FD971F;">inner_field</span> = other_field <span style="color: #F92672;">if</span> unit == <span style="color: #AE81FF;">1</span> <span style="color: #F92672;">else</span> big_field
+    <span style="color: #FD971F;">area_inner</span> = <span style="color: #AE81FF;">(</span>inner_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">2</span><span style="color: #66D9EF;">]</span> - inner_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">0</span><span style="color: #66D9EF;">]</span><span style="color: #AE81FF;">)</span> * <span style="color: #AE81FF;">(</span>inner_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">3</span><span style="color: #66D9EF;">]</span> - inner_field<span style="color: #66D9EF;">[</span><span style="color: #AE81FF;">1</span><span style="color: #66D9EF;">]</span><span style="color: #AE81FF;">)</span>
+
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span> == area_inner
+</pre>
+</div>
+</section>
+<section id="slide-org7841042">
+<h4 id="org7841042">Other examples</h4>
+<ul>
+<li>Always outside -&gt; <code>area == 0</code></li>
+<li>If distances between their sides are &lt; 0 -&gt; <code>area != 0</code></li>
+
+</ul>
+</section>
+<section id="slide-org67eaaef">
+<h3 id="org67eaaef">Test figures</h3>
+<a href="https://github.com/dpshelio/LearningTesting/tree/testplots/fields_overlap"><div class="blue-rectangle">testplots</div></a>
+<p>
+<a href="https://github.com/matplotlib/pytest-mpl">pytest-mpl</a> allows you to compare changes on figures.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #66D9EF;">@pytest.mark.mpl_image_compare</span>
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_plot</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #FD971F;">big_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">inner_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">fig</span> = figure_fields<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">return</span> fig
+</pre>
+</div>
+
+<p>
+It needs to run first to create a database of the images to compare
+in the future.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">pytest --mpl-generate-path=baseline
+</pre>
+</div>
+
+<p>
+and then afterwards
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">pytest --mpl
+</pre>
+</div>
+<p>
+or add it to the <code>pytest.ini</code>.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org6aa7c65">
+<h2 id="org6aa7c65">Step 8: Automate it all</h2>
+<a href="https://github.com/dpshelio/LearningTesting/tree/ci/fields_overlap"><div class="blue-rectangle">ci</div></a>
+</section>
+<section id="slide-org9df7ebc">
+<h3 id="org9df7ebc">Continuous Integration</h3>
+<p>
+<a href="https://travis-ci.com"><img width="100px" src=" https://travis-ci.org/images/logos/TravisCI-Mascot-1.png"></a>
+<a href="https://circleci.com"><img width="100px" src=" https://circleci.com/circleci-logo-stacked-fb.png"></a>
+<a href="https://jenkins.io"><img width="100px" src=" https://cdn-images-1.medium.com/max/550/1*2evs4lCaKrD03-MzJl5_Dw.jpeg"></a>
+</p>
+</section>
+<section id="slide-org735c47d">
+<h3 id="org735c47d">setup using Travis</h3>
+<p>
+Create a <code>.travis.yml</code> as explained in <a href="https://docs.travis-ci.com/user/getting-started/">their guide</a>.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-yaml"><span style="color: #FD971F;">language</span>: python
+<span style="color: #FD971F;">python</span>:
+  - <span style="color: #E6DB74;">"3.6"</span>
+  - <span style="color: #E6DB74;">"3.7-dev"</span>  <span style="color: #75715E;"># </span><span style="color: #75715E;">3.7 development branch</span>
+<span style="color: #75715E;"># </span><span style="color: #75715E;">command to install dependencies</span>
+<span style="color: #FD971F;">install</span>:
+  - pip install -r requirements.txt
+<span style="color: #75715E;"># </span><span style="color: #75715E;">command to run tests</span>
+<span style="color: #FD971F;">script</span>:
+  - pytest
+</pre>
+</div>
+<aside class="notes">
+<p>
+Talk about this file
+Talk about requirements file
+Show how it's seen online
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orgf5ce31f">
+<h2 id="orgf5ce31f">Conclusions</h2>
+<div class="outline-text-2" id="text-orgf5ce31f">
+</div>
+</section>
+<section id="slide-org458e8b0">
+<h3 id="org458e8b0">SIRO problem</h3>
+<p>
+Sensible Input - Reasonable Output
+</p>
+<aside class="notes">
+<p>
+We suffer from people assuming each other's data manipulation is correct.
+</p>
+
+</aside>
+
+</section>
+<section id="slide-org5d16b18" data-background="https://vignette.wikia.nocookie.net/x-files/images/f/f6/Trust_No_One_tagline.jpg/revision/latest?cb=20070529000016">
+<h3 id="org5d16b18"></h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org25dd275">
+<h2 id="org25dd275">Extra material</h2>
+<div class="outline-text-2" id="text-org25dd275">
+</div>
+</section>
+<section id="slide-org943d538">
+<h3 id="org943d538">DRY</h3>
+<a href="https://github.com/dpshelio/LearningTesting/tree/parametrize/fields_overlap"><div class="blue-rectangle">parametrize</div></a>
+<p>
+<b>Don't Repeat Yourself</b>
+</p>
+</section>
+<section id="slide-org84a8152">
+<h4 id="org84a8152">What we have</h4>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_basic</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests that basic example works '''</span>
+    <span style="color: #FD971F;">big_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">inner_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">1</span>
+
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_partial_overlap</span><span style="color: #AE81FF;">()</span>:
+    <span style="color: #E6DB74;">''' Tests when there's a partial overlap'''</span>
+    <span style="color: #FD971F;">base_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">3</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #FD971F;">over_field</span> = <span style="color: #AE81FF;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">4</span><span style="color: #AE81FF;">)</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span> == <span style="color: #AE81FF;">1</span>
+</pre>
+</div>
+
+
+
+</section>
+<section id="slide-orgfc3ef39">
+<h4 id="orgfc3ef39">updated to</h4>
+<div class="org-src-container">
+
+<pre  class="src src-python"><span style="color: #66D9EF;">@pytest.mark.parametrize</span><span style="color: #AE81FF;">(</span><span style="color: #E6DB74;">"big_field, inner_field, area"</span>, <span style="color: #66D9EF;">[</span>
+    <span style="color: #A6E22E;">(</span><span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">4</span><span style="color: #E6DB74;">)</span>, <span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">3</span><span style="color: #E6DB74;">)</span>, <span style="color: #AE81FF;">1</span><span style="color: #A6E22E;">)</span>,
+    <span style="color: #A6E22E;">(</span><span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">4</span>, <span style="color: #AE81FF;">3</span><span style="color: #E6DB74;">)</span>, <span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">2</span>, <span style="color: #AE81FF;">3</span>, <span style="color: #AE81FF;">4</span><span style="color: #E6DB74;">)</span>, <span style="color: #AE81FF;">1</span><span style="color: #A6E22E;">)</span>, <span style="color: #75715E;"># </span><span style="color: #75715E;">Tests when there's a partial overlap</span>
+<span style="color: #66D9EF;">]</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">test_overlap_cases</span><span style="color: #AE81FF;">(</span>big_field, inner_field, area<span style="color: #AE81FF;">)</span>:
+    <span style="color: #E6DB74;">''' Tests that basic example works '''</span>
+    <span style="color: #F92672;">assert</span> overlap_area<span style="color: #AE81FF;">(</span>big_field, inner_field<span style="color: #AE81FF;">)</span> == area
+
+</pre>
+</div>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>
