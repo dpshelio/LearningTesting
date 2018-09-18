@@ -401,10 +401,10 @@
    [[file:corner_overlap_number.png]]
 
    #+BEGIN_SRC python
-     def test_partial_overlap():
+     def test_corner_overlap():
          ''' Tests when there's a partial overlap'''
-         base_field = (1, 1, 4, 3)
-         over_field = (2, 2, 3, 4)
+         base_field = (1, 0, 3, 5)
+         over_field = (2, 4, 4, 6)
          assert overlap_area(base_field, over_field) == 1
    #+END_SRC
 *** Run the tests
@@ -441,7 +441,7 @@
    [[file:2opposite_edge_touching_number.png]]
 
    #+BEGIN_SRC python
-     def test_edge_touching():
+     def test_2opposite_edge_touching():
          ''' Test when there is an edge '''
          base_field = (1, 1, 4, 4)
          over_field = (2, 1, 3, 4)
