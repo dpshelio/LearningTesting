@@ -46,7 +46,7 @@
   We want to study how they ice in the poles is changing.
   #+END_NOTES
 ** problem
-   [[file:ice.jpg]]
+   [[file:images/ice.jpg]]
    #+BEGIN_NOTES
    How many of you are studying something to do with it?
    Ok, I don't want to leave you without the fun of doing it.
@@ -58,7 +58,7 @@
    agriculture fields. And there they are rectangular!!
     Our main problem is to find fields that are overlapping.
    #+END_NOTES
-   [[file:fields.jpg]]
+   [[file:images/fields.jpg]]
 ** What we got
    #+BEGIN_NOTES
    Our supervisor hands us some code that someone did a while ago
@@ -67,8 +67,8 @@
    Even when these fields were not our main thesis topic. It's all right,
    helps us to get exposure to other areas.
    #+END_NOTES
-*** TODO file
-    TODO: Link to download file.
+*** A file
+    [[https://raw.githubusercontent.com/dpshelio/LearningTesting/start/fields_overlap/overlap.py][Download link]]
   #+BEGIN_SRC python :exports code :session starting
   def oa(f1, f2):
     L1, B1, T1, R1 = f1
@@ -129,7 +129,7 @@
       sf((1.,1.,4.,4.),(2.,2.,3.,3.))
     #+END_SRC
 
-    [[file:basic.png]]
+    [[file:images/basic.png]]
 
 *** Let's try to understand
     #+BEGIN_SRC ipython  :exports none :session myexplanation
@@ -170,6 +170,7 @@
               elif i == 3:
                   ax.annotate("area = $(X_{1} - X_{0}) \\times (Y_{1} - Y_{0})$",  xy=((field1[2] + field2[0])/2, (field1[3] + field2[1])/2), xycoords='data', xytext=(-180, 45), textcoords='offset points', size=10, bbox=dict(boxstyle="round4,pad=.5", fc="0.99"), arrowprops=dict(arrowstyle="->", connectionstyle="angle,angleA=0,angleB=90,rad=10"))
               ax.axis('off')
+          filename = "images/" + filename
           fig.savefig(filename, bbox_inches='tight')
           return filename
     #+END_SRC
@@ -185,10 +186,10 @@
       # parsing the if statement
     #+END_SRC
 
-    [[file:explained.png]]
+    [[file:images/explained.png]]
 
 * Step 1: Version Control and regression test
-  #+REVEAL_HTML:   <div class="blue-rectangle">starting</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/start/fields_overlap"><div class="blue-rectangle">start</div></a>
 ** Version control
    #+BEGIN_NOTES
       We are going to skip this step. Yo is covering this later today.
@@ -218,7 +219,7 @@
   #+END_SRC
 
 * Step 2: Clean up
-  #+REVEAL_HTML:   <div class="blue-rectangle">cleanup</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/cleanup/fields_overlap"><div class="blue-rectangle">cleanup</div></a>
 
   #+BEGIN_SRC python
     def overlap_area(field1, field2):
@@ -287,6 +288,7 @@
          ax.set_xlim(0,5)
          ax.set_ylim(0,5)
          ax.axis('off')
+         filename = "images/" + filename
          fig.savefig(filename, bbox_inches='tight')
          return filename
    #+END_SRC
@@ -343,7 +345,7 @@
    [[file:no_overlap.png]]
 
 * Step 4: Write the tests
-  #+REVEAL_HTML:   <div class="blue-rectangle">tests</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/tests/fields_overlap"><div class="blue-rectangle">tests</div></a>
    #+BEGIN_SRC python :exports none :session myexample
      import matplotlib
      matplotlib.use('Agg')
@@ -366,6 +368,7 @@
          ax.set_xlim(min(*field1, *field2) - 1, max(*field1, *field2) + 1)
          ax.set_ylim(min(*field1, *field2) - 1, max(*field1, *field2) + 1)
          ax.grid(True)
+         filename = "images/" + filename
          fig.savefig(filename, bbox_inches='tight')
          return filename
    #+END_SRC
@@ -666,7 +669,7 @@
     #+END_SRC
 
 * Step 5: Coverage
-  #+REVEAL_HTML:   <div class="blue-rectangle">coverage</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/coverage/fields_overlap"><div class="blue-rectangle">coverage</div></a>
 
   How much of our code is being tested?
   If you've not installed [[https://pytest-cov.readthedocs.io/en/latest/index.html][~pytest-cov~]] do it now:
@@ -690,7 +693,7 @@
    #+END_SRC
 
 * Step 6: Keep your documentation up to date
-  #+REVEAL_HTML:   <div class="blue-rectangle">doctest</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/doctest/fields_overlap"><div class="blue-rectangle">doctest</div></a>
 ** Write an example
   Let's add an example on our documentation to see the power of [[https://docs.python.org/3.6/library/doctest.html][~doctest~]]
   #+BEGIN_EXAMPLE
@@ -717,7 +720,7 @@
    #+END_SRC
 * Step 7: Other type of tests
 ** Property based tests
-  #+REVEAL_HTML:   <div class="blue-rectangle">hypothesis</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/hypothesis/fields_overlap"><div class="blue-rectangle">hypothesis</div></a>
 
    [[https://hypothesis.readthedocs.io/][Hypothesis]] generates tests automatically based on a property.
 
@@ -761,7 +764,7 @@
     - Always outside -> ~area == 0~
     - If distances between their sides are < 0 -> ~area != 0~
 ** Test figures
-  #+REVEAL_HTML:   <div class="blue-rectangle">testplots</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/testplots/fields_overlap"><div class="blue-rectangle">testplots</div></a>
    [[https://github.com/matplotlib/pytest-mpl][pytest-mpl]] allows you to compare changes on figures.
    #+BEGIN_SRC python
      @pytest.mark.mpl_image_compare
@@ -784,7 +787,7 @@
    #+END_SRC
    or add it to the ~pytest.ini~.
 * Step 8: Automate it all
-  #+REVEAL_HTML:   <div class="blue-rectangle">ci</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/ci/fields_overlap"><div class="blue-rectangle">ci</div></a>
 ** Continuous Integration
    {{{imglnk(https://travis-ci.com, https://travis-ci.org/images/logos/TravisCI-Mascot-1.png)}}}
    {{{imglnk(https://circleci.com, https://circleci.com/circleci-logo-stacked-fb.png)}}}
@@ -824,7 +827,7 @@
 * Extra material
 
 ** DRY
-  #+REVEAL_HTML:   <div class="blue-rectangle">parametrize</div>
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/parametrize/fields_overlap"><div class="blue-rectangle">parametrize</div></a>
   *Don't Repeat Yourself*
 *** What we have
   #+BEGIN_SRC python
