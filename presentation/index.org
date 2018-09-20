@@ -1,0 +1,860 @@
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+REVEAL_MARGIN: -0.3
+#+REVEAL_EXTRA_CSS: personal.css
+#+Title: Testing, Testing, @@html:<br>@@ One, Two, ...
+#+Email: @dpshelio
+#+OPTIONS: toc:nil num:0 timestamp:nil
+#+MACRO: imglnk @@html:<a href="$1"><img width="100px" src="$2"></a>@@
+#+EXCLUDE_TAGS: hide
+* Testing
+** Why?
+  https://media.giphy.com/media/vvLWidwZNYH5e/giphy-downsized-large.gif
+** A few reasons
+
+   - *laziness*
+   - *peace of mind*
+   - *runnable specification*
+   - *reproducible debugging*
+   - *code structure / modularity*
+   - *easier to modify*
+** However...
+
+   *Not a panacea*
+   #+BEGIN_QUOTE
+    Trying to improve the quality of software by doing more testing is like\\
+    trying to lose weight by weighting yourself more often.  \\
+    -- Steve McConnell
+   #+END_QUOTE
+   #+BEGIN_NOTES
+    Testing won't corrrect a buggy code.\\
+    Testing will tell you were the bugs are...\\
+    ... if the test cases cover the bugs
+   #+END_NOTES
+
+** How? - Unit test
+  https://media.giphy.com/media/WO74HAtUC9I40/giphy.gif
+  \\
+  but there are more!
+  #+BEGIN_NOTES
+  Talk a bit about: component testing, integration testing, regression testing
+  #+END_NOTES
+
+* Climate change
+  #+BEGIN_NOTES
+  Let's look at a problem close to you. In this almost perfect scenario - still climate change exists -
+  Let's think that we have images from the poles since a century ago.
+  We want to study how they ice in the poles is changing.
+  #+END_NOTES
+** problem
+   [[file:images/ice.jpg]]
+   #+BEGIN_NOTES
+   How many of you are studying something to do with it?
+   Ok, I don't want to leave you without the fun of doing it.
+   As a physicist I like simplified problems.
+   #+END_NOTES
+** another problem
+   #+BEGIN_NOTES
+   In Saskatchewan - Canada - they have a similar problem, but with
+   agriculture fields. And there they are rectangular!!
+    Our main problem is to find fields that are overlapping.
+   #+END_NOTES
+   [[file:images/fields.jpg]]
+** What we got
+   #+BEGIN_NOTES
+   Our supervisor hands us some code that someone did a while ago
+   as a side project that they never got to complete. But we have
+   to write a paper quickly about it!!
+   Even when these fields were not our main thesis topic. It's all right,
+   helps us to get exposure to other areas.
+   #+END_NOTES
+*** A file
+    [[https://raw.githubusercontent.com/dpshelio/LearningTesting/start/fields_overlap/overlap.py][Download link]]
+  #+BEGIN_SRC python :exports code :session starting
+  def oa(f1, f2):
+    L1, B1, T1, R1 = f1
+    L2, B2, T2, R2 = f2
+    overL = max(L1, L2)
+    overB = max(B1, B2)
+    overR = min(R1, R2)
+    overT = min(T1, T2)
+    overH = (overT-overB)
+    overW = (overR-overL)
+    return overH*overW
+  #+END_SRC
+
+  #+RESULTS:
+
+  Someone gives us this code
+  and we are told it's run as:
+  #+BEGIN_SRC python :exports both :session starting
+    oa((1.,1.,4.,4.),(2.,2.,3.,3.))
+  #+END_SRC
+
+  #+RESULTS:
+  : 1.0
+
+*** On the same file...
+
+    #+BEGIN_SRC python :session starting :exports code
+      import matplotlib.pyplot as plt
+      from matplotlib.path import Path
+      import matplotlib.patches as patches
+
+      def sf(f1, f2):
+          def vertices(L,B,R,T):
+              verts = [(L,B),(L,T),(R,T),(R,B),(L,B)]
+              return verts
+          codes = [Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY]
+          p1 = Path(vertices(*f1), codes)
+          p2 = Path(vertices(*f2), codes)
+          fig = plt.figure()
+          ax = fig.add_subplot(111)
+          pa1 = patches.PathPatch(p1, facecolor='orange', lw=2)
+          pa2 = patches.PathPatch(p2, facecolor='blue', lw=2)
+          ax.add_patch(pa1)
+          ax.add_patch(pa2)
+          ax.set_xlim(0,5)
+          ax.set_ylim(0,5)
+          fig.show()
+    #+END_SRC
+
+    #+RESULTS:
+
+*** not all is lost
+  https://media.giphy.com/media/Nweu3IeBIZIvm/giphy.gif
+
+*** running it...
+    And if we call that function as we did before
+    #+BEGIN_SRC python  :exports code :session starting :export
+      sf((1.,1.,4.,4.),(2.,2.,3.,3.))
+    #+END_SRC
+
+    [[file:images/basic.png]]
+
+*** Let's try to understand
+    #+BEGIN_SRC ipython  :exports none :session myexplanation
+      import matplotlib
+      matplotlib.use('Agg')
+      import matplotlib.pyplot as plt
+      from matplotlib.path import Path
+      import matplotlib.patches as patches
+      def vertices(left, bottom, right, top):
+          verts = [(left, bottom), (left, top), (right, top), (right, bottom), (left, bottom)]
+          return verts
+      def show_fields(field1, field2, filename="output.png"):
+          plt.xkcd()
+          codes = [Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY]
+          path1 = Path(vertices(*field1), codes)
+          path2 = Path(vertices(*field2), codes)
+          fig = plt.figure(figsize=(15,5))
+          for i in range(1, 4):
+              ax = fig.add_subplot(1, 3, i)
+              patch1 = patches.PathPatch(path1, facecolor='orange', lw=2, alpha=1)
+              patch2 = patches.PathPatch(path2, facecolor='blue', lw=2, alpha=0.5)
+              ax.add_patch(patch1)
+              ax.add_patch(patch2)
+              ax.set_xlim(-0.5,5)
+              ax.set_ylim(-0.5,5)
+              ax.plot(*field1[:2], 'bo')
+              ax.plot(*field2[:2], 'go')
+              ax.plot(*field1[2:], 'yo')
+              ax.plot(*field2[2:], 'go')
+              if i == 1:
+                  ax.annotate('$(x_{0}, y_{0})$', xy=field1[:2], xycoords='data', xytext=(-15, -15), textcoords='offset points')#, arrowprops=dict(arrowstyle="->"))
+                  ax.annotate('$(x_{0}^{\prime}, y_{0}^{\prime})$', xy=field2[:2], xycoords='data', xytext=(-15, -20), textcoords='offset points')#, arrowprops=dict(arrowstyle="->"))
+                  ax.annotate('$(x_{1}, y_{1})$', xy=field1[2:], xycoords='data', xytext=(5, 5), textcoords='offset points')#, arrowprops=dict(arrowstyle="->"))
+                  ax.annotate('$(x_{1}^{\prime}, y_{1}^{\prime})$', xy=field2[2:], xycoords='data', xytext=(5, 5), textcoords='offset points')#, arrowprops=dict(arrowstyle="->"))
+              elif i == 2:
+                  ax.annotate('$X_{0} = \max(x_{0}, x_{0}^{\prime})$ \n$Y_{0} = \max(y_{0}, y_{0}^{\prime})$', xy=field2[:2], xycoords='data', xytext=(-35, -85), textcoords='offset points', size=10, bbox=dict(boxstyle="round4,pad=.5", fc="0.99"), arrowprops=dict(arrowstyle="->"))
+                  ax.annotate('$X_{1} = \min(x_{1}, x_{1}^{\prime})$ \n$Y_{1} = \min(y_{1}, y_{1}^{\prime})$', xy=field1[2:], xycoords='data', xytext=(-35, +85), textcoords='offset points', size=10, bbox=dict(boxstyle="round4,pad=.5", fc="0.99"), arrowprops=dict(arrowstyle="->"))
+              elif i == 3:
+                  ax.annotate("area = $(X_{1} - X_{0}) \\times (Y_{1} - Y_{0})$",  xy=((field1[2] + field2[0])/2, (field1[3] + field2[1])/2), xycoords='data', xytext=(-180, 45), textcoords='offset points', size=10, bbox=dict(boxstyle="round4,pad=.5", fc="0.99"), arrowprops=dict(arrowstyle="->", connectionstyle="angle,angleA=0,angleB=90,rad=10"))
+              ax.axis('off')
+          filename = "images/" + filename
+          fig.savefig(filename, bbox_inches='tight')
+          return filename
+    #+END_SRC
+
+    #+RESULTS:
+    : # Out[1]:
+
+    #+BEGIN_SRC ipython :exports none :session myexplanation :var filename="explained.png"
+      show_fields((0,0,3,3), (2,2, 4,4), filename)
+      # for some reason the export from this is not working well
+      #  I've tried to modify the ob-ipython and it's not working.
+      # Using ob-python is not working because show_fields breaks
+      # parsing the if statement
+    #+END_SRC
+
+    [[file:images/explained.png]]
+
+* Step 1: Version Control and regression test
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/start/fields_overlap"><div class="blue-rectangle">start</div></a>
+** Version control
+   #+BEGIN_NOTES
+      We are going to skip this step. Yo is covering this later today.
+   Here are the commands for you to review it in the future.
+   #+END_NOTES
+   #+BEGIN_SRC bash
+   git init
+   git add overlap.py
+   git commit -m "Stuff as I got it from <insert supervisor here>"
+   #+END_SRC
+** Regression test
+
+   Create a new file called ~test_overlap.py~
+   #+BEGIN_SRC python
+     from overlap import oa
+
+     def test_basic():
+         ''' Tests that basic example works '''
+         big_field = (1, 1, 4, 4)
+         inner_field = (2, 2, 3, 3)
+         assert oa(big_field, inner_field) == 1
+   #+END_SRC
+
+  Then we run the test as:
+  #+BEGIN_SRC bash
+  pytest
+  #+END_SRC
+
+* Step 2: Clean up
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/cleanup/fields_overlap"><div class="blue-rectangle">cleanup</div></a>
+
+  #+BEGIN_SRC python
+    def overlap_area(field1, field2):
+        left1, bottom1, top1, right1 = field1
+        left2, bottom2, top2, right2 = field2
+        overlap_left = max(left1, left2)
+        overlap_bottom = max(bottom1, bottom2)
+        overlap_right = min(right1, right2)
+        overlap_top = min(top1, top2)
+        overlap_height = (overlap_top - overlap_bottom)
+        overlap_width = (overlap_right - overlap_left)
+        return overlap_height * overlap_width
+  #+END_SRC
+** and for consistency
+   #+BEGIN_SRC python
+     def show_fields(field1, field2):
+         def vertices(left, bottom, right, top):
+             verts = [(left, bottom), (left, top), (right, top), (right, bottom), (left, bottom)]
+             return verts
+
+         codes = [Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY]
+         path1 = Path(vertices(*field1), codes)
+         path2 = Path(vertices(*field2), codes)
+         fig = plt.figure()
+         ax = fig.add_subplot(111)
+         patch1 = patches.PathPatch(path1, facecolor='orange', lw=2)
+         patch2 = patches.PathPatch(path2, facecolor='blue', lw=2)
+         ax.add_patch(patch1)
+         ax.add_patch(patch2)
+         ax.set_xlim(0,5)
+         ax.set_ylim(0,5)
+         fig.show()
+   #+END_SRC
+** Rerun test
+   #+BEGIN_SRC bash
+   $ pytest
+   ...
+   E   ImportError: cannot import name 'oa'
+   ...
+   #+END_SRC
+   #+BEGIN_NOTES
+   ... we forgot to update the tests!!
+   #+END_NOTES
+
+* Step 3: Design tests
+   #+BEGIN_SRC python :exports none :session myplots
+     import matplotlib
+     matplotlib.use('Agg')
+     import matplotlib.pyplot as plt
+     from matplotlib.path import Path
+     import matplotlib.patches as patches
+     def vertices(left, bottom, right, top):
+         verts = [(left, bottom), (left, top), (right, top), (right, bottom), (left, bottom)]
+         return verts
+     def show_fields(field1, field2, filename="output.png"):
+         plt.xkcd()
+         codes = [Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY]
+         path1 = Path(vertices(*field1), codes)
+         path2 = Path(vertices(*field2), codes)
+         fig = plt.figure(figsize=(5,5))
+         ax = fig.add_subplot(111)
+         patch1 = patches.PathPatch(path1, facecolor='orange', lw=2)
+         patch2 = patches.PathPatch(path2, facecolor='blue', lw=2)
+         ax.add_patch(patch1)
+         ax.add_patch(patch2)
+         ax.set_xlim(0,5)
+         ax.set_ylim(0,5)
+         ax.axis('off')
+         filename = "images/" + filename
+         fig.savefig(filename, bbox_inches='tight')
+         return filename
+   #+END_SRC
+
+   #+RESULTS:
+
+** all inside
+   #+BEGIN_SRC python :exports results :session myplots :var filename="all_inside.png" :results file
+     show_fields((1,1,4,4), (2,2,3,3), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:all_inside.png]]
+
+** partial overlap
+   #+BEGIN_SRC python :exports results :session myplots :var filename="partial_overlap.png" :results file :noexport:
+     show_fields((1,1,4,3), (2,2,3,4), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:partial_overlap.png]]
+
+** Think about other cases
+** overlap corner
+   #+BEGIN_SRC python :exports results :session myplots :var filename="corner_overlap.png" :results file
+     show_fields((1,1,4,4), (2,2,5,5), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:corner_overlap.png]]
+
+** just touching
+   #+BEGIN_SRC python :exports results :session myplots :var filename="edge_touching.png" :results file
+     show_fields((1,1,4,4), (2,2,3,4), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:edge_touching.png]]
+
+** just touching on the outside
+   #+BEGIN_SRC python :exports results :session myplots :var filename="edge_touching_outside.png" :results file
+     show_fields((1,1,4,4), (2,4,3,5), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:edge_touching_outside.png]]
+
+** no overlap
+   #+BEGIN_SRC python :exports results :session myplots :var filename="no_overlap.png" :results file
+     show_fields((0,0,3,3), (4, 4, 5, 5), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:no_overlap.png]]
+
+* Step 4: Write the tests
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/tests/fields_overlap"><div class="blue-rectangle">tests</div></a>
+   #+BEGIN_SRC python :exports none :session myexample
+     import matplotlib
+     matplotlib.use('Agg')
+     import matplotlib.pyplot as plt
+     from matplotlib.path import Path
+     import matplotlib.patches as patches
+     def vertices(left, bottom, right, top):
+         verts = [(left, bottom), (left, top), (right, top), (right, bottom), (left, bottom)]
+         return verts
+     def show_fields(field1, field2, filename="output.png"):
+         codes = [Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY]
+         path1 = Path(vertices(*field1), codes)
+         path2 = Path(vertices(*field2), codes)
+         fig = plt.figure(figsize=(5,5))
+         ax = fig.add_subplot(111)
+         patch1 = patches.PathPatch(path1, facecolor='orange', lw=2)
+         patch2 = patches.PathPatch(path2, facecolor='blue', lw=2)
+         ax.add_patch(patch1)
+         ax.add_patch(patch2)
+         ax.set_xlim(min(*field1, *field2) - 1, max(*field1, *field2) + 1)
+         ax.set_ylim(min(*field1, *field2) - 1, max(*field1, *field2) + 1)
+         ax.grid(True)
+         filename = "images/" + filename
+         fig.savefig(filename, bbox_inches='tight')
+         return filename
+   #+END_SRC
+
+   #+RESULTS:
+
+** all inside
+   Done already on ~test_basic~
+** partial overlap
+   #+BEGIN_SRC python :exports results :session myexample :var filename="partial_overlap_number.png" :results file
+     show_fields((1,1,4,3), (2,2,3,4), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:partial_overlap_number.png]]
+
+   #+BEGIN_SRC python
+     def test_partial_overlap():
+         ''' Tests when there's a partial overlap'''
+         base_field = (1, 1, 4, 3)
+         over_field = (2, 2, 3, 4)
+         assert overlap_area(base_field, over_field) == 1
+   #+END_SRC
+** overlap corner
+   #+BEGIN_SRC python :exports results :session myexample :var filename="corner_overlap_number.png" :results file
+     show_fields((1,0,3,5), (2,4,4,6), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:corner_overlap_number.png]]
+
+   #+BEGIN_SRC python
+     def test_corner_overlap():
+         ''' Tests when there's a partial overlap'''
+         base_field = (1, 0, 3, 5)
+         over_field = (2, 4, 4, 6)
+         assert overlap_area(base_field, over_field) == 1
+   #+END_SRC
+*** Run the tests
+    #+BEGIN_SRC bash
+      $ pytest
+      ...
+      E       assert -3 == 1
+      ...
+    #+END_SRC
+*** Find problem!
+    Look at ~overlap.py~. Is there something different between what we are using to plot and to calculate the area?
+** just touching
+   #+BEGIN_SRC python :exports results :session myexample :var filename="edge_touching_number.png" :results file
+     show_fields((1,1,4,4), (2,2,3,4), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:edge_touching_number.png]]
+
+   #+BEGIN_SRC python
+     def test_edge_touching():
+         ''' Test when there is an edge '''
+         base_field = (1, 1, 4, 4)
+         over_field = (2, 2, 3, 4)
+         assert overlap_area(base_field, over_field) == 2
+   #+END_SRC
+
+** touching opposite sides
+   #+BEGIN_SRC python :exports results :session myexample :var filename="2opposite_edge_touching_number.png" :results file
+     show_fields((1,1,4,4), (2,1,3,4), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:2opposite_edge_touching_number.png]]
+
+   #+BEGIN_SRC python
+     def test_2opposite_edge_touching():
+         ''' Test when there is an edge '''
+         base_field = (1, 1, 4, 4)
+         over_field = (2, 1, 3, 4)
+         assert overlap_area(base_field, over_field) == 3
+   #+END_SRC
+
+** touching on the outside
+   #+BEGIN_SRC python :exports results :session myexample :var filename="outside_edge_touching_number.png" :results file
+     show_fields((1,1,4,4), (2,4,3,5), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:outside_edge_touching_number.png]]
+
+   #+BEGIN_SRC python
+     def test_outside_edge_touching():
+         ''' Test when they are touching on the outside '''
+         base_field = (1, 1, 4, 4)
+         over_field = (2, 4, 3, 5)
+         assert overlap_area(base_field, over_field) == 0
+   #+END_SRC
+
+** no overlap
+   #+BEGIN_SRC python :exports results :session myexample :var filename="no_overlap_number.png" :results file
+     show_fields((0,0,3,3), (4,4,5,5), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:outside_edge_touching_number.png]]
+
+   #+BEGIN_SRC python
+     def test_no_overlap():
+         ''' Test when they are not touching each other '''
+         base_field = (0, 0, 3, 3)
+         over_field = (4, 4, 5, 5)
+         assert overlap_area(base_field, over_field) == 0
+   #+END_SRC
+*** Run the tests
+    #+BEGIN_SRC bash
+      $ pytest
+      ...
+      E       assert 1 == 0
+      ...
+    #+END_SRC
+*** Find problem!
+    Look at ~overlap_area()~.
+    #+BEGIN_SRC python
+      overlap_left = max(left1, left2) # max(0, 4) => 4
+      overlap_bottom = max(bottom1, bottom2) # max(0, 4) => 4
+      overlap_right = min(right1, right2) # min(3, 5) => 3
+      overlap_top = min(top1, top2) # min(3, 5) => 3
+      overlap_height = (overlap_top - overlap_bottom) # 3 - 4 => -1
+      overlap_width = (overlap_right - overlap_left) # 3 - 4 => -1
+      return overlap_height * overlap_width # -1 * -1 => 1
+    #+END_SRC
+*** Fixing the problem
+    #+BEGIN_SRC python
+      overlap_height = max(0, overlap_top - overlap_bottom) # max(0, 3 - 4) => max(0, -1) => 0
+      overlap_width = max(0, overlap_right - overlap_left) # max(0, 3 - 4) => max(0, -1) => 0
+    #+END_SRC
+
+    *Re-run* the tests
+** Using decimals - does still work?
+   #+BEGIN_SRC python :exports results :session myexample :var filename="floats_number.png" :results file
+     show_fields((1,1.,3.5,3.5), (3,3,5,5), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:floats_number.png]]
+
+   #+BEGIN_SRC python
+     def test_floats():
+         ''' Test that still works when using floats '''
+         base_field = (1, 1., 3.5, 3.5)
+         over_field = (3, 3, 5, 5)
+         assert overlap_area(base_field, over_field) == 0.5 * 0.5
+   #+END_SRC
+
+** Using decimals - does really work?
+   #+BEGIN_SRC python :exports results :session myexample :var filename="floats_again_number.png" :results file
+     show_fields((1,1.,3.3,3.1), (3,3,5,5), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:floats_again_number.png]]
+
+   #+BEGIN_SRC python
+     def test_floats():
+         ''' Test that still works when using floats '''
+         base_field = (1, 1., 3.3, 3.1)
+         over_field = (3, 3, 5, 5)
+         assert overlap_area(base_field, over_field) == 0.3 * 0.1
+   #+END_SRC
+*** Run the tests
+    #+BEGIN_SRC bash
+      $ pytest
+      ...
+      E       assert 0.03000000000000001 == (0.3 * 0.1)
+      ...
+    #+END_SRC
+*** What's happening?
+    #+BEGIN_SRC python :exports both :results output
+      for i in range(10):
+          print(i * 0.1)
+    #+END_SRC
+
+    #+RESULTS:
+    #+begin_example
+    0.0
+    0.1
+    0.2
+    0.30000000000000004
+    0.4
+    0.5
+    0.6000000000000001
+    0.7000000000000001
+    0.8
+    0.9
+    #+end_example
+
+
+    *Read more:* [[https://docs.python.org/3/tutorial/floatingpoint.html][Python's documentation]], [[https://floating-point-gui.de/basic/][The floating-point guide]]
+*** Solve the problem
+    #+BEGIN_SRC python
+    0.1 + 0.2 == approx(0.3, rel=1e-3)
+    #+END_SRC
+
+
+** What about negative coordinates?
+   #+BEGIN_SRC python :exports results :session myexample :var filename="basic_negative_number.png" :results file
+     show_fields((-1, -1, -4, -4), (-2, -2, -3, -3), filename)
+   #+END_SRC
+
+   #+RESULTS:
+   [[file:basic_negative_number.png]]
+
+   #+BEGIN_SRC python
+     def test_negative_basic():
+         ''' Tests that basic example works '''
+         big_field = (-1, -1, -4, -4)
+         inner_field = (-2, -2, -3, -3)
+         assert overlap_area(big_field, inner_field) == 1
+   #+END_SRC
+*** Run the tests
+    #+BEGIN_SRC bash
+      $ pytest
+      ...
+      E       assert 0 == 1
+    #+END_SRC
+
+*** Solve the problem
+    - Give up and mention it on the documentation: /"Only valid for positive coordinates"/
+#+REVEAL: split
+**** But I'm not convinced...
+     Let's write another test:
+     #+BEGIN_SRC python
+       def test_negative_basic2():
+           ''' Tests that basic example works '''
+           big_field = (-1, -1, 1, 1)
+           inner_field = (0, -2, 1, 2)
+           assert overlap_area(big_field, inner_field) == 2
+     #+END_SRC
+
+
+#+REVEAL: split
+**** Re-read the test
+     #+BEGIN_SRC python
+       big_field = (-1, -1, -4, -4)
+     #+END_SRC
+
+#+BEGIN_NOTES
+     Aha! It's not ~(left, bottom, right, top)~, but ~(right, top, left, bottom)~
+#+END_NOTES
+#+REVEAL: split
+**** What do we do?
+     Two options:
+     - Mention it in the documentation, and produce a meaningful error.
+     - Implement a fix and allow any order.
+
+** Negative tests
+   Let's throw an error if the user inputs the coordinates in the wrong order.
+   In ~overlap_area()~:
+   #+BEGIN_SRC python
+     if (left1 > right1 or bottom1 > top1 or
+         left2 > right2 or bottom2 > top2):
+         raise ValueError(" Coordinates need to be entered (left, bottom, right, top)")
+   #+END_SRC
+
+*** Documentation
+    Also is a good opportunity now to add some documentation to the function:
+    #+BEGIN_SRC python
+      '''
+      Calculates the area of overlapping fields from the coordinates
+      of their corners.
+
+      parameters
+      ----------
+      field1: (tuple | list) of (int | float)
+          Coordinates of the first field. Order should be: (left, bottom, right, top)
+
+      field2: (tuple | list) of (int | float)
+          Coordinates of the second field. Order should be: (left, bottom, right, top)
+
+      Returns
+      -------
+      area: int or float
+          Area in the coordinates entered unit.
+      '''
+    #+END_SRC
+
+*** Fix the test!!
+    on ~test_overlap.py~:
+    #+BEGIN_SRC python
+    from pytest import approx, raises
+    #+END_SRC
+    and update ~test_negative_basic()~
+    #+BEGIN_SRC python
+            def test_negative_basic():
+                ''' Tests that basic example works '''
+                big_field = (-1, -1, -4, -4)
+                inner_field = (-2, -2, -3, -3)
+                with raises(ValueError,
+                            message=" Coordinates need to be entered (left, bottom, right, top) "):
+                    overlap_area(big_field, inner_field)
+    #+END_SRC
+
+* Step 5: Coverage
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/coverage/fields_overlap"><div class="blue-rectangle">coverage</div></a>
+
+  How much of our code is being tested?
+  If you've not installed [[https://pytest-cov.readthedocs.io/en/latest/index.html][~pytest-cov~]] do it now:
+  #+BEGIN_SRC bash
+  pip install pytest-cov
+  #+END_SRC
+  and then we can run it as:
+  #+BEGIN_SRC bash
+  pytest --cov=overlap
+  #+END_SRC
+
+** want more detailed information?
+  #+BEGIN_SRC bash
+    pytest --cov=overlap --cov-report html
+    python -m http.server # C-c to kill it
+  #+END_SRC
+  You can add it into a ~pytest.ini~ so it always check.
+   #+BEGIN_SRC conf
+     [pytest]
+     addopts = --cov=overlap --cov-report html
+   #+END_SRC
+
+* Step 6: Keep your documentation up to date
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/doctest/fields_overlap"><div class="blue-rectangle">doctest</div></a>
+** Write an example
+  Let's add an example on our documentation to see the power of [[https://docs.python.org/3.6/library/doctest.html][~doctest~]]
+  #+BEGIN_EXAMPLE
+   Example
+   -------
+   >>> from overlap import overlap_area
+   >>> field_a = (1, 1, 4, 4) # position in kms as (x_0, y_0, x_1, y_1)
+   >>> field_b = (2, 2, 3, 3) # smaller field inside field_a
+   >>> overlap_area(field_a, field_b)
+   1
+  #+END_EXAMPLE
+
+** Run the test
+   #+BEGIN_SRC bash
+   python -m doctest overlap.py
+   #+END_SRC
+   Change the example to see what happens when it fails.
+
+** Add it to the pytest
+   Add ~addopts = --doctest-modules~ to the ~pytest.ini~
+   #+BEGIN_SRC conf
+     [pytest]
+     addopts = --cov=overlap --cov-report html --doctest-modules
+   #+END_SRC
+* Step 7: Other type of tests
+** Property based tests
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/hypothesis/fields_overlap"><div class="blue-rectangle">hypothesis</div></a>
+
+   [[https://hypothesis.readthedocs.io/][Hypothesis]] generates tests automatically based on a property.
+
+ https://media.giphy.com/media/2FazgZPXV9hCyeSek/giphy.gif
+
+*** inside field is always the same area
+    Load hypothesis:
+    #+BEGIN_SRC python
+      from hypothesis import given
+      from hypothesis.strategies import lists, integers, composite
+    #+END_SRC
+
+    add a new strategy to generate coordinates:
+    #+BEGIN_SRC python
+      @composite
+      def coordinates(draw, elements=integers()):
+          xs = draw(lists(elements, min_size=4, max_size=4))
+          xs[0], xs[2] = sorted([xs[0], xs[2]])
+          xs[1], xs[3] = sorted([xs[1], xs[3]])
+          return xs
+    #+END_SRC
+
+    and add the test:
+    #+BEGIN_SRC python
+      @given(coordinates())
+      def test_full_inside(big_field):
+          unit = 1
+          # In case the field generated is of height or width 1.
+          if big_field[2] - big_field[0] < 2 or big_field[3] - big_field[1] < 2:
+              unit = -1
+
+          other_field = [big_field[0] + unit, big_field[1] + unit,
+                         big_field[2] - unit, big_field[3] - unit]
+          # define which one is the inner field
+          inner_field = other_field if unit == 1 else big_field
+          area_inner = (inner_field[2] - inner_field[0]) * (inner_field[3] - inner_field[1])
+
+          assert overlap_area(big_field, inner_field) == area_inner
+    #+END_SRC
+*** Other examples
+    - Always outside -> ~area == 0~
+    - If distances between their sides are < 0 -> ~area != 0~
+** Test figures
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/testplots/fields_overlap"><div class="blue-rectangle">testplots</div></a>
+   [[https://github.com/matplotlib/pytest-mpl][pytest-mpl]] allows you to compare changes on figures.
+   #+BEGIN_SRC python
+     @pytest.mark.mpl_image_compare
+     def test_plot():
+         big_field = (1, 1, 4, 4)
+         inner_field = (2, 2, 3, 3)
+         fig = figure_fields(big_field, inner_field)
+         return fig
+   #+END_SRC
+
+   It needs to run first to create a database of the images to compare
+   in the future.
+   #+BEGIN_SRC bash
+   pytest --mpl-generate-path=baseline
+   #+END_SRC
+
+   and then afterwards
+   #+BEGIN_SRC bash
+   pytest --mpl
+   #+END_SRC
+   or add it to the ~pytest.ini~.
+* Step 8: Automate it all
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/ci/fields_overlap"><div class="blue-rectangle">ci</div></a>
+** Continuous Integration
+   {{{imglnk(https://travis-ci.com, https://travis-ci.org/images/logos/TravisCI-Mascot-1.png)}}}
+   {{{imglnk(https://circleci.com, https://circleci.com/circleci-logo-stacked-fb.png)}}}
+   {{{imglnk(https://jenkins.io, https://cdn-images-1.medium.com/max/550/1*2evs4lCaKrD03-MzJl5_Dw.jpeg)}}}
+** setup using Travis
+   Create a ~.travis.yml~ as explained in [[https://docs.travis-ci.com/user/getting-started/][their guide]].
+   #+BEGIN_SRC yaml
+      language: python
+      python:
+        - "3.6"
+        - "3.7-dev"  # 3.7 development branch
+      # command to install dependencies
+      install:
+        - pip install -r requirements.txt
+      # command to run tests
+      script:
+        - pytest
+    #+END_SRC
+    #+BEGIN_NOTES
+    Talk about this file
+    Talk about requirements file
+    Show how it's seen online
+    #+END_NOTES
+* Conclusions
+** SIRO problem
+
+   Sensible Input - Reasonable Output
+   #+BEGIN_NOTES
+   We suffer from people assuming each other's data manipulation is correct.
+   #+END_NOTES
+
+** @@HTML: @@
+:PROPERTIES:
+:reveal_background: https://vignette.wikia.nocookie.net/x-files/images/f/f6/Trust_No_One_tagline.jpg/revision/latest?cb=20070529000016
+:END:
+
+* Extra material
+
+** DRY
+  #+REVEAL_HTML:   <a href="https://github.com/dpshelio/LearningTesting/tree/parametrize/fields_overlap"><div class="blue-rectangle">parametrize</div></a>
+  *Don't Repeat Yourself*
+*** What we have
+  #+BEGIN_SRC python
+    def test_basic():
+        ''' Tests that basic example works '''
+        big_field = (1, 1, 4, 4)
+        inner_field = (2, 2, 3, 3)
+        assert overlap_area(big_field, inner_field) == 1
+
+    def test_partial_overlap():
+        ''' Tests when there's a partial overlap'''
+        base_field = (1, 1, 4, 3)
+        over_field = (2, 2, 3, 4)
+        assert overlap_area(big_field, inner_field) == 1
+  #+END_SRC
+
+
+
+*** updated to
+
+    #+BEGIN_SRC python
+      @pytest.mark.parametrize("big_field, inner_field, area", [
+          ((1, 1, 4, 4), (2, 2, 3, 3), 1),
+          ((1, 1, 4, 3), (2, 2, 3, 4), 1), # Tests when there's a partial overlap
+      ])
+      def test_overlap_cases(big_field, inner_field, area):
+          ''' Tests that basic example works '''
+          assert overlap_area(big_field, inner_field) == area
+
+    #+END_SRC
